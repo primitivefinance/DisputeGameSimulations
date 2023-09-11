@@ -4,6 +4,7 @@ use arbiter_core::{
 use std::{error::Error, sync::Arc};
 
 const TEST_ENV_LABEL: &str = "test";
+// https://github.com/ethereum-optimism/optimism/tree/develop/op-challenger
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
