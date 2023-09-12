@@ -1,6 +1,6 @@
-# arbiter-template
+# Dispute Game Simulations
 
-Minimal template for simulating contracts with arbiter. 
+Simulating Optimisms dispute game in revm with arbiter. 
 
 ## Usage
 
@@ -24,13 +24,7 @@ foundryup
 forge install
 ```
 
-4. Generate bindings
-
-```
-forge bind --revert-strings debug -b src/bindings/ --module --overwrite
-```
-
-5. Run the project
+4. Run the project
 
 ```
 cargo run
