@@ -140,7 +140,10 @@ name = "arbiter_template"
 version = "0.1.0"
 dependencies = [
  "arbiter-core",
+ "ethabi",
  "ethers",
+ "num-bigint",
+ "thiserror",
  "tokio",
 ]
 

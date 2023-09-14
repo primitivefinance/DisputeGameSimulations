@@ -4,6 +4,7 @@ use arbiter_core::{
 use ethers::providers::Middleware;
 use std::{error::Error, sync::Arc};
 mod bindings;
+mod alphabet_provider;
 use crate::bindings::dispute_game_factory::dispute_game_factory::DisputeGameFactory;
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
