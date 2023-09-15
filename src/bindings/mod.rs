@@ -172,7 +172,7 @@ pub mod initializable;
 // pub mod l1_standard_bridge;
 // pub mod l1erc721_bridge;
 // pub mod l2_cross_domain_messenger;
-// pub mod l2_output_oracle_initializer;
+pub mod l2_output_oracle_initializer;
 // pub mod l2_output_oracle_monotonic_block_num_increase_invariant;
 // pub mod l2_output_oracle_proposer;
 // pub mod l2_standard_bridge;

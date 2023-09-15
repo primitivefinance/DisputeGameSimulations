@@ -4,34 +4,59 @@ use arbiter_core::{
     environment::{BlockSettings, GasSettings},
     manager::Manager,
     middleware::RevmMiddleware,
+    math::float_to_wad,
 };
+use ethers::types::U256;
 use std::{error::Error, sync::Arc};
 mod bindings;
 use crate::bindings::{
-    dispute_game_factory::dispute_game_factory::DisputeGameFactory, proxy::proxy::Proxy,
+    dispute_game_factory::dispute_game_factory::DisputeGameFactory, proxy::proxy::Proxy, l2_output_oracle_initializer::l2_output_oracle_initializer::L2OutputOracle_Initializer,
 };
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
+const SUBMISSION_INTERVAL: f64 = 1800.0;
+const L2_BLOCK_TIME: f64 = 2.0;
+const FINALIZATION_PERIOD_SECONDS: f64 = 7.0;
+// address internal proposer = 0x000000000000000000000000000000000000AbBa;
+// address internal owner = 0x000000000000000000000000000000000000ACDC;
+// uint256 internal submissionInterval = 1800;
+// uint256 internal l2BlockTime = 2;
+// uint256 internal startingBlockNumber = 200;
+// uint256 internal startingTimestamp = 1000;
+// uint256 internal finalizationPeriodSeconds = 7 days;
 // https://github.com/ethereum-optimism/optimism/tree/develop/op-challenger
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
-    let (mut _manager, alice, _bob, _multisig) = set_up().await?;
+    let (mut _manager, admin, alice, _bob, _multisig) = set_up().await?;
 
-    // deploy proxy from alice
-    let proxy = Proxy::deploy(alice.clone(), alice.address())
-        .unwrap()
+    // deploy proxy from admin
+    let proxy = Proxy::deploy(admin.clone(), admin.address())?
         .send()
-        .await
-        .unwrap();
+        .await?;
 
     println!("Proxy address: {}", proxy.address());
-
-    let factory = DisputeGameFactory::deploy(alice.clone(), ())
-        .unwrap()
+    
+    let sub_interval = U256::from(SUBMISSION_INTERVAL as u64);
+    let l2_block_time = U256::from(L2_BLOCK_TIME as u64);
+    let finalization_period = U256::from(FINALIZATION_PERIOD_SECONDS as u64);
+    let l2_output_args = (
+        float_to_wad(SUBMISSION_INTERVAL),
+        float_to_wad(L2_BLOCK_TIME),
+        float_to_wad(FINALIZATION_PERIOD_SECONDS),
+    );
+    println!(" {:?}", proxy.methods.values());
+    // Constructor is not defined in abi
+    let l2_output_oracle = L2OutputOracle_Initializer::deploy(admin.clone(), (sub_interval, l2_block_time, finalization_period))?
         .send()
         .await
         .unwrap();
+
+    println!("L2OutputOracle address: {}", l2_output_oracle.address());
+
+    let factory = DisputeGameFactory::deploy(admin.clone(), ())?
+        .send()
+        .await?;
 
     println!("Factory address: {}", factory.address());
     Ok(())
@@ -39,6 +64,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
 
 async fn set_up() -> Result<(
     Manager,
+    Arc<RevmMiddleware>,
     Arc<RevmMiddleware>,
     Arc<RevmMiddleware>,
     Arc<RevmMiddleware>,
@@ -65,6 +91,12 @@ async fn set_up() -> Result<(
         None,
     )?);
 
+    let admin = Arc::new(RevmMiddleware::new(
+        manager.environments.get(ENV_LABEL).unwrap(),
+        None,
+    )?);
+
+    println!("admin at address {}", admin.address());
     println!("alice at address {}", alice.address());
     println!("bob at address {}", bob.address());
     println!("multisig at address {}", multisig.address());
@@ -80,7 +112,7 @@ async fn set_up() -> Result<(
         .deal(multisig.address(), ethers::types::U256::from(1 << 16))
         .await
         .unwrap();
-    Ok((manager, alice, bob, multisig))
+    Ok((manager, admin, alice, bob, multisig))
 }
 
 // in DisputeGameFactory.t.sol

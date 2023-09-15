@@ -1,10 +1,6 @@
 /// This module was auto-generated with ethers-rs Abigen.
 /// More information at: <https://github.com/gakonst/ethers-rs>
-#[allow(
-    clippy::all,
-    dead_code,
-    non_camel_case_types
-)]
+#[allow(clippy::all, dead_code, non_camel_case_types)]
 pub mod types {
     #[allow(deprecated)]
     fn __abi() -> ::ethers::core::abi::Abi {
