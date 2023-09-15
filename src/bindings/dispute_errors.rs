@@ -1,10 +1,6 @@
 /// This module was auto-generated with ethers-rs Abigen.
 /// More information at: <https://github.com/gakonst/ethers-rs>
-#[allow(
-    clippy::all,
-    dead_code,
-    non_camel_case_types,
-)]
+#[allow(clippy::all, dead_code, non_camel_case_types)]
 pub mod dispute_errors {
     #[allow(deprecated)]
     fn __abi() -> ::ethers::core::abi::Abi {
@@ -18,9 +14,8 @@ pub mod dispute_errors {
         }
     }
     ///The parsed JSON ABI of the contract.
-    pub static DISPUTEERRORS_ABI: ::ethers::contract::Lazy<::ethers::core::abi::Abi> = ::ethers::contract::Lazy::new(
-        __abi,
-    );
+    pub static DISPUTEERRORS_ABI: ::ethers::contract::Lazy<::ethers::core::abi::Abi> =
+        ::ethers::contract::Lazy::new(__abi);
     pub struct DisputeErrors<M>(::ethers::contract::Contract<M>);
     impl<M> ::core::clone::Clone for DisputeErrors<M> {
         fn clone(&self) -> Self {
@@ -52,17 +47,16 @@ pub mod dispute_errors {
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            Self(
-                ::ethers::contract::Contract::new(
-                    address.into(),
-                    DISPUTEERRORS_ABI.clone(),
-                    client,
-                ),
-            )
+            Self(::ethers::contract::Contract::new(
+                address.into(),
+                DISPUTEERRORS_ABI.clone(),
+                client,
+            ))
         }
     }
     impl<M: ::ethers::providers::Middleware> From<::ethers::contract::Contract<M>>
-    for DisputeErrors<M> {
+        for DisputeErrors<M>
+    {
         fn from(contract: ::ethers::contract::Contract<M>) -> Self {
             Self::new(contract.address(), contract.client())
         }

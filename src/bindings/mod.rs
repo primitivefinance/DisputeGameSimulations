@@ -231,7 +231,7 @@ pub mod ownable_upgradeable;
 // pub mod predeploys;
 // pub mod preimage_key_lib;
 // pub mod preimage_oracle;
-// pub mod proxy;
+pub mod proxy;
 // pub mod proxy_admin;
 // pub mod reentrancy_guard;
 // pub mod relay_actor;

@@ -4,10 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { git = "https://github.com/primitivefinance/arbiter" }
+arbiter-core = { version = "0.5.0" }
 tokio = { version = "1.11.0", features = ["full"] }
-ethers = { git = "https://github.com/primitivefinance/ethers-rs" }
-
+ethers = { version = "2.0.10" }
+revm = { version = "3.3.0" }
+async-trait = "0.1.73"
+anyhow = "1.0.75"
 ethabi = "18.0.0"
 num-bigint = "0.4"
 thiserror = "1.0"

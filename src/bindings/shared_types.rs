@@ -7,7 +7,7 @@
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct Attestation {
     pub uid: [u8; 32],
@@ -30,7 +30,7 @@ pub struct Attestation {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct AttestationRequest {
     pub schema: [u8; 32],
@@ -45,7 +45,7 @@ pub struct AttestationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct AttestationRequestData {
     pub recipient: ::ethers::core::types::Address,
@@ -64,7 +64,7 @@ pub struct AttestationRequestData {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct DelegatedAttestationRequest {
     pub schema: [u8; 32],
@@ -82,7 +82,7 @@ pub struct DelegatedAttestationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct DelegatedRevocationRequest {
     pub schema: [u8; 32],
@@ -100,7 +100,7 @@ pub struct DelegatedRevocationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct Deployment {
     pub name: ::std::string::String,
@@ -115,7 +115,7 @@ pub struct Deployment {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct Checkpoint {
     pub from_block: u32,
@@ -130,7 +130,7 @@ pub struct Checkpoint {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct DripParameters {
     pub recipient: ::ethers::core::types::Address,
@@ -145,7 +145,7 @@ pub struct DripParameters {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct MultiAttestationRequest {
     pub schema: [u8; 32],
@@ -160,7 +160,7 @@ pub struct MultiAttestationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct MultiDelegatedAttestationRequest {
     pub schema: [u8; 32],
@@ -178,7 +178,7 @@ pub struct MultiDelegatedAttestationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct MultiDelegatedRevocationRequest {
     pub schema: [u8; 32],
@@ -196,7 +196,7 @@ pub struct MultiDelegatedRevocationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct MultiRevocationRequest {
     pub schema: [u8; 32],
@@ -211,7 +211,7 @@ pub struct MultiRevocationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct ClaimableInvite {
     pub issuer: ::ethers::core::types::Address,
@@ -226,7 +226,7 @@ pub struct ClaimableInvite {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct ResourceConfig {
     pub max_resource_limit: u32,
@@ -245,7 +245,7 @@ pub struct ResourceConfig {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct RevocationRequest {
     pub schema: [u8; 32],
@@ -260,7 +260,7 @@ pub struct RevocationRequest {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct RevocationRequestData {
     pub uid: [u8; 32],
@@ -275,7 +275,7 @@ pub struct RevocationRequestData {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct SchemaRecord {
     pub uid: [u8; 32],
@@ -292,7 +292,7 @@ pub struct SchemaRecord {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct Signature {
     pub v: u8,
@@ -308,7 +308,7 @@ pub struct Signature {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct FuzzSelector {
     pub addr: ::ethers::core::types::Address,
@@ -323,7 +323,7 @@ pub struct FuzzSelector {
     Debug,
     PartialEq,
     Eq,
-    Hash
+    Hash,
 )]
 pub struct WithdrawalTransaction {
     pub nonce: ::ethers::core::types::U256,

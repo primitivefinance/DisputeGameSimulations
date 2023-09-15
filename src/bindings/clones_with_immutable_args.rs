@@ -1,10 +1,6 @@
 /// This module was auto-generated with ethers-rs Abigen.
 /// More information at: <https://github.com/gakonst/ethers-rs>
-#[allow(
-    clippy::all,
-    dead_code,
-    non_camel_case_types,
-)]
+#[allow(clippy::all, dead_code, non_camel_case_types)]
 pub mod clones_with_immutable_args {
     #[allow(deprecated)]
     fn __abi() -> ::ethers::core::abi::Abi {
@@ -18,21 +14,18 @@ pub mod clones_with_immutable_args {
         }
     }
     ///The parsed JSON ABI of the contract.
-    pub static CLONESWITHIMMUTABLEARGS_ABI: ::ethers::contract::Lazy<
-        ::ethers::core::abi::Abi,
-    > = ::ethers::contract::Lazy::new(__abi);
+    pub static CLONESWITHIMMUTABLEARGS_ABI: ::ethers::contract::Lazy<::ethers::core::abi::Abi> =
+        ::ethers::contract::Lazy::new(__abi);
     #[rustfmt::skip]
     const __BYTECODE: &[u8] = b"`\xAB`7`\x0B\x82\x82\x829\x80Q`\0\x1A`s\x14`*WcNH{q`\xE0\x1B`\0R`\0`\x04R`$`\0\xFD[0`\0R`s\x81S\x82\x81\xF3\xFEs\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x80`@\x81\x90R\x7F\x08\xC3y\xA0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81R` `\x84\x90\x81R`5`\xA4R\x7FContract does not have fallback `\xC4\x90\x81R\x7Fnor receive functions\0\0\0\0\0\0\0\0\0\0\0`\xE4R0\x93\x90\x93\x14\x92\x90\x82\xFD\xFE\xA1dsolcC\0\x08\x13\0\n";
     /// The bytecode of the contract.
-    pub static CLONESWITHIMMUTABLEARGS_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
-        __BYTECODE,
-    );
+    pub static CLONESWITHIMMUTABLEARGS_BYTECODE: ::ethers::core::types::Bytes =
+        ::ethers::core::types::Bytes::from_static(__BYTECODE);
     #[rustfmt::skip]
     const __DEPLOYED_BYTECODE: &[u8] = b"s\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x80`@\x81\x90R\x7F\x08\xC3y\xA0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81R` `\x84\x90\x81R`5`\xA4R\x7FContract does not have fallback `\xC4\x90\x81R\x7Fnor receive functions\0\0\0\0\0\0\0\0\0\0\0`\xE4R0\x93\x90\x93\x14\x92\x90\x82\xFD\xFE\xA1dsolcC\0\x08\x13\0\n";
     /// The deployed bytecode of the contract.
-    pub static CLONESWITHIMMUTABLEARGS_DEPLOYED_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
-        __DEPLOYED_BYTECODE,
-    );
+    pub static CLONESWITHIMMUTABLEARGS_DEPLOYED_BYTECODE: ::ethers::core::types::Bytes =
+        ::ethers::core::types::Bytes::from_static(__DEPLOYED_BYTECODE);
     pub struct ClonesWithImmutableArgs<M>(::ethers::contract::Contract<M>);
     impl<M> ::core::clone::Clone for ClonesWithImmutableArgs<M> {
         fn clone(&self) -> Self {
@@ -64,13 +57,11 @@ pub mod clones_with_immutable_args {
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            Self(
-                ::ethers::contract::Contract::new(
-                    address.into(),
-                    CLONESWITHIMMUTABLEARGS_ABI.clone(),
-                    client,
-                ),
-            )
+            Self(::ethers::contract::Contract::new(
+                address.into(),
+                CLONESWITHIMMUTABLEARGS_ABI.clone(),
+                client,
+            ))
         }
         /// Constructs the general purpose `Deployer` instance based on the provided constructor arguments and sends it.
         /// Returns a new instance of a deployer that returns an instance of this contract after sending the transaction
@@ -113,7 +104,8 @@ pub mod clones_with_immutable_args {
         }
     }
     impl<M: ::ethers::providers::Middleware> From<::ethers::contract::Contract<M>>
-    for ClonesWithImmutableArgs<M> {
+        for ClonesWithImmutableArgs<M>
+    {
         fn from(contract: ::ethers::contract::Contract<M>) -> Self {
             Self::new(contract.address(), contract.client())
         }
