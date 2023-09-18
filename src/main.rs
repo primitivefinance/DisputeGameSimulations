@@ -8,10 +8,7 @@ use arbiter_core::{
 };
 use ethers::types::U256;
 use std::{error::Error, sync::Arc};
-mod bindings;
-use crate::bindings::{
-    dispute_game_factory::dispute_game_factory::DisputeGameFactory, proxy::proxy::Proxy, l2_output_oracle_initializer::l2_output_oracle_initializer::L2OutputOracle_Initializer,
-};
+use foundry_contracts::{l2_output_oracle::l2_output_oracle::L2OutputOracle, dispute_game_factory::dispute_game_factory::DisputeGameFactory, proxy::proxy::Proxy};
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
 const SUBMISSION_INTERVAL: f64 = 1800.0;
@@ -47,10 +44,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     );
     println!(" {:?}", proxy.methods.values());
     // Constructor is not defined in abi
-    let l2_output_oracle = L2OutputOracle_Initializer::deploy(admin.clone(), (sub_interval, l2_block_time, finalization_period))?
-        .send()
-        .await
-        .unwrap();
+    let l2_output_oracle = L2OutputOracle::deploy(admin.clone(), (sub_interval, l2_block_time, finalization_period))?.send().await?;
 
     println!("L2OutputOracle address: {}", l2_output_oracle.address());
 

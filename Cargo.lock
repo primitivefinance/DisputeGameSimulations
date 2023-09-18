@@ -147,21 +147,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "arbiter_template"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "arbiter-core",
- "async-trait",
- "ethabi",
- "ethers",
- "num-bigint",
- "revm",
- "thiserror",
- "tokio",
-]
-
-[[package]]
 name = "ark-ff"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -990,6 +975,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "disputegame_simulations"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arbiter-core",
+ "async-trait",
+ "ethabi",
+ "ethers",
+ "foundry-contracts",
+ "num-bigint",
+ "revm",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "dlib"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1580,6 +1581,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a62bc1cf6f830c2ec14a513a9fb124d0a213a629668a4186f329db21fe045652"
 dependencies = [
  "percent-encoding",
+]
+
+[[package]]
+name = "foundry-contracts"
+version = "0.1.0"
+dependencies = [
+ "ethers",
 ]
 
 [[package]]

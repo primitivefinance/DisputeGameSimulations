@@ -1,5 +1,5 @@
 [package]
-name = "arbiter_template"
+name = "disputegame_simulations"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,3 +13,5 @@ anyhow = "1.0.75"
 ethabi = "18.0.0"
 num-bigint = "0.4"
 thiserror = "1.0"
+
+foundry-contracts = { path = "src/bindings" }
