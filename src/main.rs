@@ -37,11 +37,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let sub_interval = U256::from(SUBMISSION_INTERVAL as u64);
     let l2_block_time = U256::from(L2_BLOCK_TIME as u64);
     let finalization_period = U256::from(FINALIZATION_PERIOD_SECONDS as u64);
-    let l2_output_args = (
-        float_to_wad(SUBMISSION_INTERVAL),
-        float_to_wad(L2_BLOCK_TIME),
-        float_to_wad(FINALIZATION_PERIOD_SECONDS),
-    );
+
     println!(" {:?}", proxy.methods.values());
     // Constructor is not defined in abi
     let l2_output_oracle = L2OutputOracle::deploy(admin.clone(), (sub_interval, l2_block_time, finalization_period))?.send().await?;
@@ -51,8 +47,27 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let factory = DisputeGameFactory::deploy(admin.clone(), ())?
         .send()
         .await?;
-
     println!("Factory address: {}", factory.address());
+
+
+    let game_type = 0; // replace with the actual game type
+    let root_claim = ethers::types::U256::from(1234); // replace with the actual root claim
+    let extra_data = vec![1, 2, 3]; // replace with the actual extra data
+
+    let _result = match factory.create(game_type, root_claim.into(), extra_data.into()).send().await
+    {
+        Ok(pending_tx) => {
+            println!("Dispute game creation successful");
+            let receipt = pending_tx.await?.unwrap();
+            println!("Dispute game address {:?}", receipt.logs);
+            receipt.logs[8].clone()
+        }
+        Err(contract_error) => {
+            println!("Dispute Creation Failed: {:?}", contract_error);
+            panic!("Dispute Creation Failed: {:?}", contract_error);
+        }
+    };
+
     Ok(())
 }
 
