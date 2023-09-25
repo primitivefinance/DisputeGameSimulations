@@ -1,14 +1,21 @@
+use alloy_primitives::U256;
+use alloy_sol_types::{self, sol};
 use anyhow::Result;
 use arbiter_core::{
     environment::EnvironmentParameters,
     environment::{BlockSettings, GasSettings},
     manager::Manager,
     middleware::RevmMiddleware,
-    math::float_to_wad,
 };
-use ethers::types::U256;
+use ethers::types::U256 as eU256;
+use ethers::utils::keccak256 as ekeccak256;
+use foundry_contracts::{
+    alphabet_vm::AlphabetVM,
+    dispute_game_factory,
+    l2_output_oracle::l2_output_oracle::L2OutputOracle,
+    proxy::proxy::Proxy,
+};
 use std::{error::Error, sync::Arc};
-use foundry_contracts::{l2_output_oracle::l2_output_oracle::L2OutputOracle, dispute_game_factory::dispute_game_factory::DisputeGameFactory, proxy::proxy::Proxy};
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
 const SUBMISSION_INTERVAL: f64 = 1800.0;
@@ -25,7 +32,7 @@ const FINALIZATION_PERIOD_SECONDS: f64 = 7.0;
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
-    let (mut _manager, admin, alice, _bob, _multisig) = set_up().await?;
+    let (mut _manager, admin, _alice, _bob, _multisig) = set_up().await?;
 
     // deploy proxy from admin
     let proxy = Proxy::deploy(admin.clone(), admin.address())?
@@ -33,40 +40,44 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
         .await?;
 
     println!("Proxy address: {}", proxy.address());
-    
-    let sub_interval = U256::from(SUBMISSION_INTERVAL as u64);
-    let l2_block_time = U256::from(L2_BLOCK_TIME as u64);
-    let finalization_period = U256::from(FINALIZATION_PERIOD_SECONDS as u64);
+
+    let sub_interval = eU256::from(SUBMISSION_INTERVAL as u64);
+    let l2_block_time = eU256::from(L2_BLOCK_TIME as u64);
+    let finalization_period = eU256::from(FINALIZATION_PERIOD_SECONDS as u64);
 
     println!(" {:?}", proxy.methods.values());
     // Constructor is not defined in abi
-    let l2_output_oracle = L2OutputOracle::deploy(admin.clone(), (sub_interval, l2_block_time, finalization_period))?.send().await?;
+    let l2_output_oracle = L2OutputOracle::deploy(
+        admin.clone(),
+        (sub_interval, l2_block_time, finalization_period),
+    )?
+    .send()
+    .await?;
 
     println!("L2OutputOracle address: {}", l2_output_oracle.address());
 
-    let factory = DisputeGameFactory::deploy(admin.clone(), ())?
+    let factory = dispute_game_factory::DisputeGameFactory::deploy(admin.clone(), ())?
         .send()
         .await?;
     println!("Factory address: {}", factory.address());
 
+    let _game_type = 0; // replace with the actual game type
+                       // alloy sol macro
+    sol! {
+        type MyValueType is uint256;
+    }
 
-    let game_type = 0; // replace with the actual game type
-    let root_claim = ethers::types::U256::from(1234); // replace with the actual root claim
-    let extra_data = vec![1, 2, 3]; // replace with the actual extra data
+    // UDTs are encoded as their underlying type
+    let mvt = MyValueType::from(U256::from(1));
+    // let data: U256 = "0x0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
+    let root_claim = ekeccak256(mvt.encode_single()); // replace with the actual root claim
+    let _extra_data = vec![1, 2, 3]; // replace with the actual extra data
 
-    let _result = match factory.create(game_type, root_claim.into(), extra_data.into()).send().await
-    {
-        Ok(pending_tx) => {
-            println!("Dispute game creation successful");
-            let receipt = pending_tx.await?.unwrap();
-            println!("Dispute game address {:?}", receipt.logs);
-            receipt.logs[8].clone()
-        }
-        Err(contract_error) => {
-            println!("Dispute Creation Failed: {:?}", contract_error);
-            panic!("Dispute Creation Failed: {:?}", contract_error);
-        }
-    };
+    let alphabet_vm = AlphabetVM::deploy(admin.clone(), root_claim)?
+        .send()
+        .await?;
+
+    println!("AlphabetVM address: {}", alphabet_vm.address());
 
     Ok(())
 }

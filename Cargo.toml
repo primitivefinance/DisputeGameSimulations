@@ -15,3 +15,5 @@ num-bigint = "0.4"
 thiserror = "1.0"
 
 foundry-contracts = { path = "src/bindings" }
+alloy-primitives = "0.3.3"
+alloy-sol-types = "0.3.2"
