@@ -2,6 +2,7 @@ pub use l2_output_oracle::*;
 /// This module was auto-generated with ethers-rs Abigen.
 /// More information at: <https://github.com/gakonst/ethers-rs>
 #[allow(
+    clippy::all,
     clippy::enum_variant_names,
     clippy::too_many_arguments,
     clippy::upper_case_acronyms,
