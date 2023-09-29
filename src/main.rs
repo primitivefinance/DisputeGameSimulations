@@ -8,6 +8,7 @@ use arbiter_core::{
     middleware::RevmMiddleware,
 };
 use ethers::types::U256 as eU256;
+use ethers::core::types::Bytes;
 use ethers::utils::keccak256 as ekeccak256;
 use foundry_contracts::{
     alphabet_vm::AlphabetVM,
@@ -61,8 +62,9 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
         .await?;
     println!("Factory address: {}", factory.address());
 
-    let _game_type = 0; // replace with the actual game type
-                       // alloy sol macro
+    let game_type: u8 = 0; // replace with the actual game type
+    
+
     sol! {
         type MyValueType is uint256;
     }
@@ -71,13 +73,27 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let mvt = MyValueType::from(U256::from(1));
     // let data: U256 = "0x0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
     let root_claim = ekeccak256(mvt.encode_single()); // replace with the actual root claim
-    let _extra_data = vec![1, 2, 3]; // replace with the actual extra data
+    let _extra_data: Bytes = vec![1, 2, 3].into(); // replace with the actual extra data
 
     let alphabet_vm = AlphabetVM::deploy(admin.clone(), root_claim)?
         .send()
         .await?;
 
     println!("AlphabetVM address: {}", alphabet_vm.address());
+
+    let binding = factory
+        .create(
+            game_type,
+            root_claim,
+            _extra_data
+        );
+    let output = binding
+        .send()
+        .await?;
+    println!("New game: {:?}", output);
+
+    // let destructure = 
+
 
     Ok(())
 }

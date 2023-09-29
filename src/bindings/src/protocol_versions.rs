@@ -8,6 +8,7 @@ pub use protocol_versions::*;
     clippy::type_complexity,
     dead_code,
     non_camel_case_types,
+    non_snake_case,
 )]
 pub mod protocol_versions {
     #[allow(deprecated)]

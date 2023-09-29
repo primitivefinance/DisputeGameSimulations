@@ -8,6 +8,7 @@ pub use system_config::*;
     clippy::type_complexity,
     dead_code,
     non_camel_case_types,
+    non_snake_case,
 )]
 pub mod system_config {
     pub use super::super::shared_types::*;

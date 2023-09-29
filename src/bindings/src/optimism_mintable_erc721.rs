@@ -8,6 +8,7 @@ pub use optimism_mintable_erc721::*;
     clippy::type_complexity,
     dead_code,
     non_camel_case_types,
+    non_snake_case,
 )]
 pub mod optimism_mintable_erc721 {
     #[allow(deprecated)]
