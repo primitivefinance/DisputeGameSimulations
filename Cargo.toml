@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { version = "0.5.0" }
+arbiter-core = { version = "0.6.1" }
 tokio = { version = "1.11.0", features = ["full"] }
 ethers = { version = "2.0.10" }
 revm = { version = "3.3.0" }
@@ -15,5 +15,10 @@ num-bigint = "0.4"
 thiserror = "1.0"
 
 foundry-contracts = { path = "src/bindings" }
-alloy-primitives = "0.3.3"
-alloy-sol-types = "0.3.2"
+alloy-primitives = "0.4.2"
+alloy-sol-types = "0.4.2"
+durin-primitives = { git = "https://github.com/0xJepsen/durin.git" }
+durin-fault = { git = "https://github.com/0xJepsen/durin.git", branch = "visibility" }
+serde = { version = "1.0.130", features = ["derive"] }
+config = "0.13.3"
+clap = { version = "4.4.6", features = ["derive"] }
