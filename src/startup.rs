@@ -31,23 +31,23 @@ pub async fn set_up_agents() -> Result<(
     Arc<RevmMiddleware>,
     Arc<RevmMiddleware>,
 )> {
-    let environment = EnvironmentBuilder::new().build();
+    let environment = EnvironmentBuilder::new().label(ENV_LABEL).build();
 
     let alice = RevmMiddleware::new(
         &environment,
-        Some(ENV_LABEL)).unwrap();
+        Some("0")).unwrap();
 
     let bob = RevmMiddleware::new(
         &environment,
-        Some(ENV_LABEL)).unwrap();
+        Some("1")).unwrap();
 
     let multisig = RevmMiddleware::new(
         &environment,
-        Some(ENV_LABEL)).unwrap();
+        Some("2")).unwrap();
 
     let admin = RevmMiddleware::new(
         &environment,
-        Some(ENV_LABEL)).unwrap();
+        Some("3")).unwrap();
 
     println!("admin at address {}", admin.address());
     println!("alice at address {}", alice.address());
@@ -103,7 +103,7 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     // UDTs are encoded as their underlying type
     let mvt = MyValueType::from(U256::from(1));
     // let data: U256 = "0x0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
-    let root_claim = ekeccak256(mvt.encode_single()); // replace with the actual root claim
+    let root_claim = ekeccak256(MyValueType::abi_encode(&mvt)); // replace with the actual root claim
 
     let alphabet_vm = AlphabetVM::deploy(admin.clone(), root_claim)?
         .send()
