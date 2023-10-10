@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { version = "0.5.0" }
+arbiter-core = { git = "https://github.com/primitivefinance/arbiter.git", branch = "arbiter/version" }
 tokio = { version = "1.11.0", features = ["full"] }
 ethers = { version = "2.0.10" }
 revm = { version = "3.3.0" }
@@ -15,5 +15,5 @@ num-bigint = "0.4"
 thiserror = "1.0"
 
 foundry-contracts = { path = "src/bindings" }
-alloy-primitives = "0.3.3"
-alloy-sol-types = "0.3.2"
+alloy-primitives = "0.4.0"
+alloy-sol-types = "0.4.0"
