@@ -3,11 +3,6 @@ use ethers::types::U256 as eU256;
 
 use super::*;
 
-// pub async fn initialize() -> Result<()> {
-//     let (mut _manager, admin, _alice, _bob, _multisig) = startup::set_up().await?;
-
-//     todo!()
-// }
 
 /// All the possible contracts that this simulation will actively use, but not
 /// all that are deployed!

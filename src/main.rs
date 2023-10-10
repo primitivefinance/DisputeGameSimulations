@@ -10,6 +10,7 @@ use foundry_contracts::{
 };
 use std::{error::Error, sync::Arc};
 mod startup;
+mod actors;
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
 const SUBMISSION_INTERVAL: f64 = 1800.0;
