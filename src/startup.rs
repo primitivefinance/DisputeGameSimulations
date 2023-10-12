@@ -69,6 +69,8 @@ pub async fn set_up_agents() -> Result<(
 }
 
 pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationContracts> {
+    // use the factory and call the set implementation on the particular game we have deployed
+    // because they need the clones of immutable data
     let sub_interval = eU256::from(SUBMISSION_INTERVAL as u64);
     let l2_block_time = eU256::from(L2_BLOCK_TIME as u64);
     let finalization_period = eU256::from(FINALIZATION_PERIOD_SECONDS as u64);
@@ -81,8 +83,16 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     .await?;
     println!("L2OutputOracle address: {}", l2_output_oracle.address());
 
+    // l2_output_oracle
+    // details for this are in the proposals.md
+    // can produce BS here for alphabet but then need valid ones for mips game
+    // https://github.com/ethereum-optimism/optimism/blob/develop/specs/proposals.md#l2-output-commitment-construction
+    // need to propose some outputs for game to run
+    // one in initial block and one next block
+
     let block_oracle = BlockOracle::deploy(admin.clone(), ())?.send().await?;
 
+    // checkpoint a point a block after the preposals at least 1 block after the preposals
     println!("BlockOracle address: {}", block_oracle.address());
 
     sol! {
@@ -101,13 +111,13 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
         .send()
         .await?;
 
-    // let alphabet_trace_provider = AlphabetTraceProvider::new(root_claim, 4);
     
     println!("AlphabetVM address: {}", alphabet_vm.address());
     let game_type = GameType::from(0);
-    let claim = ekeccak256("A");
-    let depth = eU256::from(4);
-    let duration = Duration::from(604800);
+    let mut claim = ekeccak256("A"); 
+    claim[0]= 0x01; // need to set zeroith byte
+    let depth = eU256::from(4); // 16 letters / numbers supports 2^(depth). Average cannon trace is 2^40 = 40ish B
+    let duration = Duration::from(60); // 1 week, each side has 3.5 days to respond to a dispute. Might want to make this smaller for testing
 
     let disputegame = FaultDisputeGame::deploy(
         admin,
