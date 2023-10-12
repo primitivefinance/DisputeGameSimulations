@@ -1,13 +1,17 @@
-// use durin_fault;
-// use c
+use std::sync::Arc;
+
+use alloy_primitives::Address;
+use durin_fault::{FaultDisputeSolver};
+
 
 use arbiter_core::middleware::RevmMiddleware;
+use durin_primitives::Claim;
 use foundry_contracts::{fault_dispute_game::FaultDisputeGame, alphabet_vm::AlphabetVM, block_oracle::BlockOracle, l2_output_oracle::L2OutputOracle};
 
 pub struct HonestPlayer {
-    pub name: String,
-    pub address: String,
-    pub client: RevmMiddleware,
+    // pub fault: FaultDisputeSolver<RevmMiddleware, RevmMiddleware, Claim>,
+    pub address: Address,
+    pub client: Arc<RevmMiddleware>,
     pub vm: AlphabetVM<RevmMiddleware>,
     pub oracle: L2OutputOracle<RevmMiddleware>,
     pub block_oracle: BlockOracle<RevmMiddleware>,

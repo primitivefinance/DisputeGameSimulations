@@ -89,9 +89,9 @@ checksum = "0942ffc6dcaadf03badf6e6a2d0228460359d5e34b57ccdc720b7382dfbd5ec5"
 
 [[package]]
 name = "alloy-primitives"
-version = "0.4.0"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b4084879b7257d5b95b9009837c07a1868bd7d60e66418a7764b9b580ae64e0"
+checksum = "a0628ec0ba5b98b3370bb6be17b12f23bfce8ee4ad83823325a20546d9b03b78"
 dependencies = [
  "alloy-rlp",
  "bytes",
@@ -139,13 +139,14 @@ dependencies = [
 
 [[package]]
 name = "alloy-sol-macro"
-version = "0.4.0"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de84480ac5979d8513164f7e668f837839cd6d5c4bdb8beecbb8cf062b61cb48"
+checksum = "8a98ad1696a2e17f010ae8e43e9f2a1e930ed176a8e3ff77acfeff6dfb07b42c"
 dependencies = [
  "const-hex",
  "dunce",
  "heck",
+ "proc-macro-error",
  "proc-macro2",
  "quote",
  "syn 2.0.29",
@@ -155,11 +156,11 @@ dependencies = [
 
 [[package]]
 name = "alloy-sol-types"
-version = "0.4.0"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa7e42aa2983db6676af5d762bc8d9371dd74f5948739790d3080c3d652a957b"
+checksum = "98d7107bed88e8f09f0ddcc3335622d87bfb6821f3e0c7473329fb1cfad5e015"
 dependencies = [
- "alloy-primitives 0.4.0",
+ "alloy-primitives 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "alloy-sol-macro",
  "const-hex",
  "serde",
@@ -1129,12 +1130,13 @@ dependencies = [
 name = "disputegame_simulations"
 version = "0.1.0"
 dependencies = [
- "alloy-primitives 0.4.0",
+ "alloy-primitives 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "alloy-sol-types",
  "anyhow",
  "arbiter-core",
  "async-trait",
- "durin-primitives",
+ "durin-fault",
+ "durin-primitives 0.0.1 (git+https://github.com/0xJepsen/durin.git)",
  "ethabi",
  "ethers",
  "foundry-contracts",
@@ -1160,11 +1162,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56ce8c6da7551ec6c462cbaf3bfbc75131ebbfa1c944aeaa9dab51ca1c5f0c3b"
 
 [[package]]
+name = "durin-fault"
+version = "0.0.1"
+source = "git+https://github.com/0xJepsen/durin.git?branch=visibility#7b7a20cc405af1310cbf85a1b9cfb75ebc622c8c"
+dependencies = [
+ "alloy-primitives 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "alloy-sol-types",
+ "anyhow",
+ "durin-primitives 0.0.1 (git+https://github.com/0xJepsen/durin.git?branch=visibility)",
+]
+
+[[package]]
 name = "durin-primitives"
 version = "0.0.1"
-source = "git+https://github.com/anton-rs/durin.git#a3189f693f8efe9e951ebdaa273760a68a6872c0"
+source = "git+https://github.com/0xJepsen/durin.git?branch=visibility#7b7a20cc405af1310cbf85a1b9cfb75ebc622c8c"
 dependencies = [
- "alloy-primitives 0.4.2",
+ "alloy-primitives 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anyhow",
+]
+
+[[package]]
+name = "durin-primitives"
+version = "0.0.1"
+source = "git+https://github.com/0xJepsen/durin.git#a3189f693f8efe9e951ebdaa273760a68a6872c0"
+dependencies = [
+ "alloy-primitives 0.4.2 (git+https://github.com/alloy-rs/core.git)",
  "anyhow",
 ]
 
@@ -4376,9 +4398,9 @@ dependencies = [
 
 [[package]]
 name = "syn-solidity"
-version = "0.4.0"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b8a5a633f1172a0c80b1516a988e7e8efa7ce9cededf56590f54e593e4513b3"
+checksum = "86b837ef12ab88835251726eb12237655e61ec8dc8a280085d1961cdc3dfd047"
 dependencies = [
  "paste",
  "proc-macro2",

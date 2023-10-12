@@ -15,7 +15,7 @@ num-bigint = "0.4"
 thiserror = "1.0"
 
 foundry-contracts = { path = "src/bindings" }
-alloy-primitives = "0.4.0"
-alloy-sol-types = "0.4.0"
-durin-primitives = { git = "https://github.com/anton-rs/durin.git" }
-# durin-fault = { git = "https://github.com/anton-rs/durin.git" }
+alloy-primitives = "0.4.2"
+alloy-sol-types = "0.4.2"
+durin-primitives = { git = "https://github.com/0xJepsen/durin.git" }
+durin-fault = { git = "https://github.com/0xJepsen/durin.git", branch = "visibility" }

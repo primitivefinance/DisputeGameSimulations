@@ -101,6 +101,8 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
         .send()
         .await?;
 
+    // let alphabet_trace_provider = AlphabetTraceProvider::new(root_claim, 4);
+    
     println!("AlphabetVM address: {}", alphabet_vm.address());
     let game_type = GameType::from(0);
     let claim = ekeccak256("A");
