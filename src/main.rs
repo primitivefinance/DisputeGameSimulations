@@ -7,6 +7,7 @@ use foundry_contracts::{
     alphabet_vm::AlphabetVM, block_oracle::block_oracle::BlockOracle,
     fault_dispute_game::fault_dispute_game::FaultDisputeGame,
     l2_output_oracle::l2_output_oracle::L2OutputOracle,
+    dispute_game_factory::DisputeGameFactory,
 };
 use std::{error::Error, sync::Arc};
 mod startup;

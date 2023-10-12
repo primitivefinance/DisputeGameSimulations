@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use alloy_primitives::Address;
-use durin_fault::{FaultDisputeSolver, providers::AlphabetTraceProvider, FaultDisputeState};
+use durin_fault::{FaultDisputeSolver, providers::AlphabetTraceProvider, FaultDisputeState, AlphaClaimSolver};
 
 
 use arbiter_core::middleware::RevmMiddleware;

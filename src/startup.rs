@@ -1,6 +1,7 @@
 use arbiter_core::environment::{builder::EnvironmentBuilder, cheatcodes::Cheatcodes, Environment};
 use ethers::types::U256 as eU256;
 
+
 use super::*;
 
 
@@ -21,6 +22,9 @@ pub struct SimulationContracts {
 
     /// The `FaultDisputeGame` contract.
     pub disputegame: FaultDisputeGame<RevmMiddleware>,
+
+    /// The `FaultDisputeGameFactory` contract.
+    pub factory: DisputeGameFactory<RevmMiddleware>,
 }
 
 pub async fn set_up_agents() -> Result<(
@@ -48,20 +52,20 @@ pub async fn set_up_agents() -> Result<(
     alice
         .apply_cheatcode(Cheatcodes::Deal {
             address: alice.address(),
-            amount: U256::MAX.into(),
+            amount: eU256::MAX,
         })
         .await
         .unwrap();
     bob.apply_cheatcode(Cheatcodes::Deal {
         address: bob.address(),
-        amount: U256::MAX.into(),
+        amount: eU256::MAX,
     })
     .await
     .unwrap();
     multisig
         .apply_cheatcode(Cheatcodes::Deal {
             address: multisig.address(),
-            amount: U256::MAX.into(),
+            amount: eU256::MAX,
         })
         .await
         .unwrap();
@@ -69,8 +73,7 @@ pub async fn set_up_agents() -> Result<(
 }
 
 pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationContracts> {
-    // use the factory and call the set implementation on the particular game we have deployed
-    // because they need the clones of immutable data
+
     let sub_interval = eU256::from(SUBMISSION_INTERVAL as u64);
     let l2_block_time = eU256::from(L2_BLOCK_TIME as u64);
     let finalization_period = eU256::from(FINALIZATION_PERIOD_SECONDS as u64);
@@ -120,7 +123,7 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     let duration = Duration::from(60); // 1 week, each side has 3.5 days to respond to a dispute. Might want to make this smaller for testing
 
     let disputegame = FaultDisputeGame::deploy(
-        admin,
+        admin.clone(),
         (
             game_type.into(),
             claim,
@@ -144,10 +147,24 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     // L2OutputOracle _l2oo,
     // BlockOracle _blockOracle
 
+    // deploy factory contract
+    let factory = DisputeGameFactory::deploy(admin.clone(), ())?
+        .send()
+        .await?;
+    println!("DisputeGameFactory address: {}", factory.address());
+
+
+    // use the factory and call the set implementation on the particular game we have deployed
+    // because they need the clones of immutable data
+    // let call = factory.set_implementation(0, disputegame.address());
+    // let reciept = call.send().await?.await?.unwrap();
+    // println!("reciept: {:?}", reciept.status);
+
     Ok(SimulationContracts {
         l2_output_oracle,
         block_oracle,
         alphabet_vm,
         disputegame,
+        factory,    
     })
 }
