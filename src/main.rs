@@ -5,13 +5,13 @@ use arbiter_core::middleware::RevmMiddleware;
 use ethers::utils::keccak256 as ekeccak256;
 use foundry_contracts::{
     alphabet_vm::AlphabetVM, block_oracle::block_oracle::BlockOracle,
+    dispute_game_factory::DisputeGameFactory,
     fault_dispute_game::fault_dispute_game::FaultDisputeGame,
     l2_output_oracle::l2_output_oracle::L2OutputOracle,
-    dispute_game_factory::DisputeGameFactory,
 };
 use std::{error::Error, sync::Arc};
-mod startup;
 mod actors;
+mod startup;
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
 const SUBMISSION_INTERVAL: f64 = 1800.0; // output every 30minutes
@@ -32,10 +32,10 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
 
     let _contracts = startup::deploy_contracts(admin).await?;
 
-    // make our agents 
+    // make our agents
 
-    // main sim loop 
-    // check for event 
+    // main sim loop
+    // check for event
     // make action depending on whos turns
 
     // Things to note:

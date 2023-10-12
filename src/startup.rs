@@ -1,9 +1,8 @@
+use alloy_primitives::Bytes;
 use arbiter_core::environment::{builder::EnvironmentBuilder, cheatcodes::Cheatcodes, Environment};
 use ethers::types::U256 as eU256;
 
-
 use super::*;
-
 
 /// All the possible contracts that this simulation will actively use, but not
 /// all that are deployed!
@@ -73,7 +72,6 @@ pub async fn set_up_agents() -> Result<(
 }
 
 pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationContracts> {
-
     let sub_interval = eU256::from(SUBMISSION_INTERVAL as u64);
     let l2_block_time = eU256::from(L2_BLOCK_TIME as u64);
     let finalization_period = eU256::from(FINALIZATION_PERIOD_SECONDS as u64);
@@ -92,7 +90,21 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     // https://github.com/ethereum-optimism/optimism/blob/develop/specs/proposals.md#l2-output-commitment-construction
     // need to propose some outputs for game to run
     // one in initial block and one next block
+    let result = admin.update_block(1, 32)?;
+    println!("result: {:?}", result);
+    let call = l2_output_oracle
+        .propose_l2_output(
+            ekeccak256("Asdfa"),
+            eU256::from(1),
+            ekeccak256(b"1"),
+            eU256::from("1"),
+        )
+        .send()
+        .await?
+        .await?;
 
+    let result = call.unwrap();
+    println!("result: {:?}", result);
     let block_oracle = BlockOracle::deploy(admin.clone(), ())?.send().await?;
 
     // checkpoint a point a block after the preposals at least 1 block after the preposals
@@ -107,20 +119,18 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
 
     // UDTs are encoded as their underlying type
     let mvt = AbiEncodableU256::from(U256::from(1));
-    // let data: U256 = "0x0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
-    let root_claim = ekeccak256(AbiEncodableU256::abi_encode(&mvt)); // replace with the actual root claim
+    let root_claim = ekeccak256(AbiEncodableU256::abi_encode(&mvt));
 
     let alphabet_vm = AlphabetVM::deploy(admin.clone(), root_claim)?
         .send()
         .await?;
 
-    
     println!("AlphabetVM address: {}", alphabet_vm.address());
     let game_type = GameType::from(0);
-    let mut claim = ekeccak256("A"); 
-    claim[0]= 0x01; // need to set zeroith byte
+    let mut claim = ekeccak256("A");
+    claim[0] = 0x01; // need to set zeroith byte
     let depth = eU256::from(4); // 16 letters / numbers supports 2^(depth). Average cannon trace is 2^40 = 40ish B
-    let duration = Duration::from(60); // 1 week, each side has 3.5 days to respond to a dispute. Might want to make this smaller for testing
+    let duration = Duration::from(60);
 
     let disputegame = FaultDisputeGame::deploy(
         admin.clone(),
@@ -153,18 +163,20 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
         .await?;
     println!("DisputeGameFactory address: {}", factory.address());
 
-
     // use the factory and call the set implementation on the particular game we have deployed
     // because they need the clones of immutable data
-    // let call = factory.set_implementation(0, disputegame.address());
-    // let reciept = call.send().await?.await?.unwrap();
-    // println!("reciept: {:?}", reciept.status);
+    // bytes calldata _extraData // abi.encode(l2 blocknumber being disputed + l1  block number (checkpointed in block oracle))
+
+    // let new_game = factory.create(game_type.into(), root_claim, );
+    let call = factory.set_implementation(game_type.into(), disputegame.address());
+    let reciept = call.send().await?.await?.unwrap();
+    println!("reciept: {:?}", reciept);
 
     Ok(SimulationContracts {
         l2_output_oracle,
         block_oracle,
         alphabet_vm,
         disputegame,
-        factory,    
+        factory,
     })
 }
