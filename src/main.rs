@@ -53,7 +53,7 @@ struct Args {
 enum Commands {
     /// Represents the `Bind` subcommand.
     Simulate {
-        #[clap(index = 1, default_value = "src/config/gbm.toml")]
+        #[clap(index = 1, default_value = "src/config/dispute_game.toml")]
         config_path: String,
     },
 }

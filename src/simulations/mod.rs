@@ -42,7 +42,7 @@ impl SimulationType {
     ///
     /// This function matches on the `SimulationType` to determine which simulation setup to use,
     /// then executes the chosen simulation.
-    async fn run(config: SimulationConfig<Fixed>) -> Result<()> {
+    async fn run(config: SimulationConfig) -> Result<()> {
         let simulation = match config.simulation {
             SimulationType::DisputeGame => {
                 dispute_game::setup(config.clone()).await?
@@ -69,8 +69,6 @@ pub fn batch(config_path: &str) -> Result<()> {
     //
     let config = SimulationConfig::new(config_path)?;
 
-    let direct_configs: Vec<SimulationConfig<Fixed>> = config.generate();
-
     // Create a multi-threaded runtime
     let rt = Builder::new_multi_thread().build()?;
 
@@ -80,39 +78,30 @@ pub fn batch(config_path: &str) -> Result<()> {
         .map(|max_parallel| Arc::new(Semaphore::new(max_parallel)));
 
     rt.block_on(async {
-        let mut handles = vec![];
         let errors = Arc::new(tokio::sync::Mutex::new(vec![]));
+        let errors_clone = errors.clone();
+        let semaphore_clone = semaphore.clone();
+        // Acquire a permit inside the spawned task
+        let permit = if let Some(ref semaphore_clone) = semaphore_clone {
+            // Acquire a permit outside the spawned task
+            let permit = semaphore_clone.acquire().await.unwrap();
+            Some(permit)
+        } else {
+            None
+        };
 
-        for config in direct_configs {
-            let errors_clone = errors.clone();
-            let semaphore_clone = semaphore.clone();
-            handles.push(tokio::spawn(async move {
-                // Acquire a permit inside the spawned task
-                let permit = if let Some(ref semaphore_clone) = semaphore_clone {
-                    // Acquire a permit outside the spawned task
-                    let permit = semaphore_clone.acquire().await.unwrap();
-                    Some(permit)
-                } else {
-                    None
-                };
+        let result = SimulationType::run(config).await;
+        match result {
+            Err(e) => {
+                let mut errors_clone_lock = errors_clone.lock().await;
+                errors_clone_lock.push(e);
+                // Drop the permit when the simulation is done.
+                drop(permit);
+            }
+            Result::Ok(_) => {
+                drop(permit);
+            }
 
-                let result = SimulationType::run(config).await;
-                match result {
-                    Err(e) => {
-                        let mut errors_clone_lock = errors_clone.lock().await;
-                        errors_clone_lock.push(e);
-                        // Drop the permit when the simulation is done.
-                        drop(permit);
-                    }
-                    Result::Ok(_) => {
-                        drop(permit);
-                    }
-                }
-            }));
-        }
-
-        for handle in handles {
-            handle.await?;
         }
 
         Ok(())

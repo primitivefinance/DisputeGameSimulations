@@ -1,4 +1,3 @@
-use crate::settings::{SimulationConfig, parameters::Fixed};
 
 use super::*;
 
@@ -29,7 +28,7 @@ impl BlockAdmin {
     ///
     /// # Returns
     /// * [`Result<Self>`] - A result containing the new BlockAdmin or an error.
-    pub async fn new(environment: &Environment, config: &SimulationConfig<Fixed>) -> Result<Self> {
+    pub async fn new(environment: &Environment, config: &SimulationConfig) -> Result<Self> {
         let client = RevmMiddleware::new(environment, "block_admin".into())?;
         let timestep_size = config.block.timestep_size;
         let block_number = client.get_block_number().await?.as_u64();

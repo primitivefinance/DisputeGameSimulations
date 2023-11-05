@@ -1,3 +1,5 @@
-simulation = "dispute_game"
+simulation = "DisputeGame"
 output_directory = "analysis/dispute_game"
 
+[block]
+timestep_size = 15

@@ -1,5 +1,5 @@
 use super::*;
-use alloy_primitives::Bytes;
+use anyhow::Ok;
 use arbiter_core::environment::{builder::EnvironmentBuilder, cheatcodes::Cheatcodes, Environment};
 use ethers::types::U256 as eU256;
 
@@ -27,10 +27,14 @@ pub struct SimulationContracts {
     pub factory: DisputeGameFactory<RevmMiddleware>,
 }
 
-pub async fn setup(config: SimulationConfig<Fixed>) -> Result<Simulation> {
+pub async fn setup(config: SimulationConfig) -> Result<Simulation> {
 
     let (environment, admin, alice, bob, multisig) = set_up_agents().await?;
-    todo!()
+
+    let contracts = deploy_contracts(admin.clone()).await?;
+
+    todo!("setup the agents and return them")
+
 }
 pub async fn set_up_agents() -> Result<(
     Environment,
