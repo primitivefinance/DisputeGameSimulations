@@ -1,0 +1,3 @@
+simulation = "dispute_game"
+output_directory = "analysis/dispute_game"
+
