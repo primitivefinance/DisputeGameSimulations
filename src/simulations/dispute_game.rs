@@ -1,13 +1,7 @@
+use super::*;
+use anyhow::Ok;
 use arbiter_core::environment::{builder::EnvironmentBuilder, cheatcodes::Cheatcodes, Environment};
 use ethers::types::U256 as eU256;
-
-use super::*;
-
-// pub async fn initialize() -> Result<()> {
-//     let (mut _manager, admin, _alice, _bob, _multisig) = startup::set_up().await?;
-
-//     todo!()
-// }
 
 /// All the possible contracts that this simulation will actively use, but not
 /// all that are deployed!
@@ -26,8 +20,18 @@ pub struct SimulationContracts {
 
     /// The `FaultDisputeGame` contract.
     pub disputegame: FaultDisputeGame<RevmMiddleware>,
+
+    /// The `FaultDisputeGameFactory` contract.
+    pub factory: DisputeGameFactory<RevmMiddleware>,
 }
 
+pub async fn setup(_config: SimulationConfig) -> Result<Simulation> {
+    let (_environment, admin, _alice, _bob, _multisig) = set_up_agents().await?;
+
+    let _contracts = deploy_contracts(admin.clone()).await?;
+
+    todo!("setup the agents and return them")
+}
 pub async fn set_up_agents() -> Result<(
     Environment,
     Arc<RevmMiddleware>,
@@ -53,20 +57,20 @@ pub async fn set_up_agents() -> Result<(
     alice
         .apply_cheatcode(Cheatcodes::Deal {
             address: alice.address(),
-            amount: U256::MAX.into(),
+            amount: eU256::MAX,
         })
         .await
         .unwrap();
     bob.apply_cheatcode(Cheatcodes::Deal {
         address: bob.address(),
-        amount: U256::MAX.into(),
+        amount: eU256::MAX,
     })
     .await
     .unwrap();
     multisig
         .apply_cheatcode(Cheatcodes::Deal {
             address: multisig.address(),
-            amount: U256::MAX.into(),
+            amount: eU256::MAX,
         })
         .await
         .unwrap();
@@ -86,8 +90,30 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     .await?;
     println!("L2OutputOracle address: {}", l2_output_oracle.address());
 
+    // l2_output_oracle
+    // details for this are in the proposals.md
+    // can produce BS here for alphabet but then need valid ones for mips game
+    // https://github.com/ethereum-optimism/optimism/blob/develop/specs/proposals.md#l2-output-commitment-construction
+    // need to propose some outputs for game to run
+    // one in initial block and one next block
+    let result = admin.update_block(1, 32)?;
+    println!("result: {:?}", result);
+    let call = l2_output_oracle
+        .propose_l2_output(
+            ekeccak256("Asdfa"),
+            eU256::from(1),
+            ekeccak256(b"1"),
+            eU256::from(1),
+        )
+        .send()
+        .await?
+        .await?;
+
+    let result = call.unwrap();
+    println!("result: {:?}", result);
     let block_oracle = BlockOracle::deploy(admin.clone(), ())?.send().await?;
 
+    // checkpoint a point a block after the preposals at least 1 block after the preposals
     println!("BlockOracle address: {}", block_oracle.address());
 
     sol! {
@@ -99,8 +125,7 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
 
     // UDTs are encoded as their underlying type
     let mvt = AbiEncodableU256::from(U256::from(1));
-    // let data: U256 = "0x0000000000000000000000000000000000000000000000000000000000000001".parse().unwrap();
-    let root_claim = ekeccak256(AbiEncodableU256::abi_encode(&mvt)); // replace with the actual root claim
+    let root_claim = ekeccak256(AbiEncodableU256::abi_encode(&mvt));
 
     let alphabet_vm = AlphabetVM::deploy(admin.clone(), root_claim)?
         .send()
@@ -108,12 +133,13 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
 
     println!("AlphabetVM address: {}", alphabet_vm.address());
     let game_type = GameType::from(0);
-    let claim = ekeccak256("A");
-    let depth = eU256::from(4);
-    let duration = Duration::from(604800);
+    let mut claim = ekeccak256("A");
+    claim[0] = 0x01; // need to set zeroith byte
+    let depth = eU256::from(4); // 16 letters / numbers supports 2^(depth). Average cannon trace is 2^40 = 40ish B
+    let duration = Duration::from(60);
 
     let disputegame = FaultDisputeGame::deploy(
-        admin,
+        admin.clone(),
         (
             game_type.into(),
             claim,
@@ -137,10 +163,26 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
     // L2OutputOracle _l2oo,
     // BlockOracle _blockOracle
 
+    // deploy factory contract
+    let factory = DisputeGameFactory::deploy(admin.clone(), ())?
+        .send()
+        .await?;
+    println!("DisputeGameFactory address: {}", factory.address());
+
+    // use the factory and call the set implementation on the particular game we have deployed
+    // because they need the clones of immutable data
+    // bytes calldata _extraData // abi.encode(l2 blocknumber being disputed + l1  block number (checkpointed in block oracle))
+
+    // let new_game = factory.create(game_type.into(), root_claim, );
+    let call = factory.set_implementation(game_type.into(), disputegame.address());
+    let reciept = call.send().await?.await?.unwrap();
+    println!("reciept: {:?}", reciept);
+
     Ok(SimulationContracts {
         l2_output_oracle,
         block_oracle,
         alphabet_vm,
         disputegame,
+        factory,
     })
 }
