@@ -96,8 +96,8 @@ pub async fn deploy_contracts(admin: Arc<RevmMiddleware>) -> Result<SimulationCo
         .propose_l2_output(
             ekeccak256("Asdfa"),
             eU256::from(1),
-            ekeccak256(b"1"),
-            eU256::from("1"),
+            ekeccak256(1 as i32),
+            eU256::from(1),
         )
         .send()
         .await?
