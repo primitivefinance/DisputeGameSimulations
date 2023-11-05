@@ -10,13 +10,12 @@ use foundry_contracts::{
     l2_output_oracle::l2_output_oracle::L2OutputOracle,
 };
 
-use std::time::Instant;
 use clap::{ArgAction, CommandFactory, Parser, Subcommand};
+use std::time::Instant;
 
 pub mod agents;
 pub mod settings;
 pub mod simulations;
-use std::{error::Error, sync::Arc};
 
 const ENV_LABEL: &str = "OPTIMISM_FRAUD_PROOF";
 const SUBMISSION_INTERVAL: f64 = 1800.0; // output every 30minutes
@@ -30,7 +29,6 @@ const FINALIZATION_PERIOD_SECONDS: f64 = 700.0;
 // uint256 internal startingTimestamp = 1000;
 // uint256 internal finalizationPeriodSeconds = 7 days;
 // https://github.com/ethereum-optimism/optimism/tree/develop/op-challenger
-
 
 /// Represents command-line arguments passed to this binary.
 #[derive(Parser)]

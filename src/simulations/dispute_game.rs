@@ -3,8 +3,6 @@ use anyhow::Ok;
 use arbiter_core::environment::{builder::EnvironmentBuilder, cheatcodes::Cheatcodes, Environment};
 use ethers::types::U256 as eU256;
 
-use super::*;
-
 /// All the possible contracts that this simulation will actively use, but not
 /// all that are deployed!
 /// Each is bound to a `Client` and can be used to interact with the contract.
@@ -27,14 +25,12 @@ pub struct SimulationContracts {
     pub factory: DisputeGameFactory<RevmMiddleware>,
 }
 
-pub async fn setup(config: SimulationConfig) -> Result<Simulation> {
+pub async fn setup(_config: SimulationConfig) -> Result<Simulation> {
+    let (_environment, admin, _alice, _bob, _multisig) = set_up_agents().await?;
 
-    let (environment, admin, alice, bob, multisig) = set_up_agents().await?;
-
-    let contracts = deploy_contracts(admin.clone()).await?;
+    let _contracts = deploy_contracts(admin.clone()).await?;
 
     todo!("setup the agents and return them")
-
 }
 pub async fn set_up_agents() -> Result<(
     Environment,

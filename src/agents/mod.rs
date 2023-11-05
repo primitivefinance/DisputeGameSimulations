@@ -1,21 +1,13 @@
 use super::*;
 
-use crate::settings::{SimulationConfig, parameters::Fixed};
+use crate::settings::SimulationConfig;
 pub mod block_admin;
-use std::sync::Arc;
 use arbiter_core::environment::Environment;
 use arbiter_core::middleware::RevmMiddleware;
 use ethers::providers::Middleware;
+use std::sync::Arc;
 // use settings::SimulationConfig;
 use std::marker::{Send, Sync};
-use alloy_primitives::Address;
-use durin_fault::{
-    providers::AlphabetTraceProvider, AlphaClaimSolver, FaultDisputeSolver, FaultDisputeState,
-};
-use foundry_contracts::{
-    alphabet_vm::AlphabetVM, block_oracle::BlockOracle, fault_dispute_game::FaultDisputeGame,
-    l2_output_oracle::L2OutputOracle,
-};
 
 // use crate::settings::parameters::Fixed;
 

@@ -1,4 +1,3 @@
-
 use super::*;
 
 /// A structure representing a block admin agent.

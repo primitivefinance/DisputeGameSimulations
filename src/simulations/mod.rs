@@ -8,13 +8,11 @@ use std::sync::Arc;
 use tokio::sync::Semaphore;
 
 use super::*;
-use crate::{agents::Agents, settings::parameters::Fixed};
+use crate::agents::Agents;
 pub mod dispute_game;
-
 
 use crate::settings::SimulationConfig;
 use anyhow::Result;
-use settings::parameters::Parameterized;
 use tokio::runtime::Builder;
 
 /// Represents the main Simulation structure.
@@ -44,9 +42,7 @@ impl SimulationType {
     /// then executes the chosen simulation.
     async fn run(config: SimulationConfig) -> Result<()> {
         let simulation = match config.simulation {
-            SimulationType::DisputeGame => {
-                dispute_game::setup(config.clone()).await?
-            }
+            SimulationType::DisputeGame => dispute_game::setup(config.clone()).await?,
         };
         match looper(simulation.agents, simulation.steps).await {
             Result::Ok(_) => {
@@ -101,7 +97,6 @@ pub fn batch(config_path: &str) -> Result<()> {
             Result::Ok(_) => {
                 drop(permit);
             }
-
         }
 
         Ok(())
